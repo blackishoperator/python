@@ -9,5 +9,5 @@ EXPOSE 443
 
 ADD /app.py /app.py
 
-RUN echo print("hello docker") > app.py
+RUN echo "print("hello docker")" > app.py
 CMD "python3" "app.py"
