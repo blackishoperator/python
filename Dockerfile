@@ -1,11 +1,19 @@
-FROM ubuntu:latest
+#FROM ubuntu:latest
+#
+#RUN apt-get update
+#RUN apt-get install -y python3
+#
+#EXPOSE 80
+#EXPOSE 8080
+#EXPOSE 443
+#
+#ADD /app.py /app.py
+#CMD ["python3" "app.py"]
 
-RUN apt-get update
-RUN apt-get install -y python3
+FROM python:3
 
-EXPOSE 80
-EXPOSE 8080
-EXPOSE 443
+WORKDIR /usr/src/app
 
-ADD /app.py /app.py
-CMD ["python3" "app.py"]
+COPY . .
+
+CMD [ "python", "./app.py" ]
