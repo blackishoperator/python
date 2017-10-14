@@ -16,4 +16,5 @@ WORKDIR /usr/src/app
 
 COPY . .
 
-CMD [ "python", "./app.py" ]
+#CMD [ "python", "./app.py" ]
+RUN python ./app.py
