@@ -1,2 +1,2 @@
 FROM ubuntu:latest  
-RUN /blackishmurderer/queermoderator/app.py
+RUN ls
