@@ -8,4 +8,4 @@ EXPOSE 8080
 EXPOSE 443
 
 ADD /app.py /app.py
-RUN python3 app.py
+CMD ["python3" "app.py"]
