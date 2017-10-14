@@ -1,3 +1,2 @@
-FROM ubuntu:latest  
-RUN ls
+FROM ubuntu:latest
 RUN ls /home
