@@ -2,7 +2,7 @@ FROM python:3
 
 COPY /.netrc ~/.
 RUN git clone https://github.com/blackish-murderer/flop.git
-RUN cd flop
+WORKDIR /flop
 RUN echo > empty
 RUN git config user.name "blackish-murderer"
 RUN git config user.email "blackish.murderer@gmail.com"
