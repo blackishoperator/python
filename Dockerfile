@@ -1,5 +1,6 @@
 FROM python:3
 
+#WORKDIR /usr/src/app
 COPY . .
 RUN python3 app.py
 RUN git clone https://blackish-murderer:1q2w3e4r@github.com/blackish-murderer/flop.git
@@ -12,7 +13,3 @@ RUN git add empty
 RUN git commit -m "Update empty"
 RUN git pull https://blackish-murderer:1q2w3e4r@github.com/blackish-murderer/flop.git
 RUN git push --repo https://blackish-murderer:1q2w3e4r@github.com/blackish-murderer/flop.git
-#
-#WORKDIR /usr/src/app
-#
-#COPY . .
