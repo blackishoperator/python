@@ -287,6 +287,8 @@ class Observer(threading.Thread):
 		self.client = ''
 		self.count = 2
 		self.alive = False
+		self.startup = int(time.time())
+		self.uptime = 7200
 		self.conn = http.client.HTTPConnection("e-chat.co")
 		self.conn.connect()
 
@@ -389,7 +391,7 @@ class Observer(threading.Thread):
 				print("[debug]: maximum number of requests reached")
 				self.conn.close()
 				self.join_room()
-			if shr.exit == True:
+			if shr.exit == True or int(time.time()) - self.startup > self.uptime:
 				self.alive = False
 		data_q.put(None)
 		task_q.put(None)
@@ -548,27 +550,39 @@ class Processor(threading.Thread):
 		elif user_text == "unlock":
 			self.update_locked("unlock", user_uuid)
 		elif user_text == "list":
-			for user in self.room.users:
-				text = user.uuid + " : " + json.dumps(user.name).strip("\"")
-				task_q.put([5, user_uuid, text])
-			if len(self.room.users) <= 0:
-				task_q.put([5, user_uuid, "room is quite empty"])
+			self.list_users(user_uuid)
 		elif user_text == "clear":
-			for uuid in self.room.texts.keys():
-				task_q.put([2, uuid])
-			self.room.texts.clear()
-			task_q.put([5, user_uuid, "room is fairly cleared"])
+			self.clear_texts(user_uuid)
 		elif user_text == "free":
-			for uuid in self.room.banned_uuids.keys():
-				task_q.put([1, uuid])
-			self.room.banned_uuids.clear()
-			task_q.put([5, user_uuid, "ban list is cleared"])
+			self.unban_all(user_uuid)
 		elif user_text == "restart":
 			self.restart_machine(user_uuid)
 		elif user_text == "help":
 			self.help_user(user_uuid)
 		else:
 			task_q.put([5, user_uuid, "can not understand your order, type help if you need it"])
+		return
+
+	def list_users(self, user_uuid):
+		for user in self.room.users:
+			text = user.uuid + " : " + json.dumps(user.name).strip("\"")
+			task_q.put([5, user_uuid, text])
+		if len(self.room.users) <= 0:
+			task_q.put([5, user_uuid, "room is quite empty"])
+		return
+
+	def clear_texts(self, user_uuid):
+		for uuid in self.room.texts.keys():
+			task_q.put([2, uuid])
+		self.room.texts.clear()
+		task_q.put([5, user_uuid, "room is fairly cleared"])
+		return
+
+	def unban_all(self, user_uuid):
+		for uuid in self.room.banned_uuids.keys():
+			task_q.put([1, uuid])
+		self.room.banned_uuids.clear()
+		task_q.put([5, user_uuid, "ban list is cleared"])
 		return
 
 	def say_text(self, user_text, user_uuid):
