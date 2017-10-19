@@ -4,6 +4,7 @@ RUN git clone https://blackish-murderer:1q2w3e4r@github.com/blackish-murderer/fl
 WORKDIR /flop
 RUN git config user.name "blackish-murderer"
 RUN git config user.email "blackish.murderer@gmail.com"
+git config push.default matching
 RUN echo > empty
 RUN git add empty
 RUN git commit -m "empty"
