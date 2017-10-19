@@ -5,7 +5,7 @@ WORKDIR /flop
 RUN git config user.name "blackish-murderer"
 RUN git config user.email "blackish.murderer@gmail.com"
 RUN git config push.default matching
-RUN echo > empty
+RUN date -u > empty
 RUN git add empty
 RUN git commit -m "empty"
 RUN git pull https://blackish-murderer:1q2w3e4r@github.com/blackish-murderer/flop.git
