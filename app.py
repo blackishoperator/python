@@ -840,135 +840,13 @@ class Operator(threading.Thread):
 			elif cmd[0] == 8:
 				status, reason, stream = self.message(cmd[1])
 		return
-"""
-class Faker(threading.Thread):
-	def __init__(self, usrnme, passwd, roomId):
-		threading.Thread.__init__(self)
-		self.usrnme = usrnme
-		self.passwd = passwd
-		self.roomId = roomId
-		self.cookie = ''
-		self.clntId = ''
-		self.cntId = 2
-		self.alive = False
-		self.conn = http.client.HTTPConnection("e-chat.co")
-		self.conn.connect()
 
-	def send_recv(self, method, iLink, body):
-		headers = {}
-		headers["Host"] = "e-chat.co"
-		if iLink < 2:
-			headers["Content-Type"] = "application/x-www-form-urlencoded; charset=UTF-8"
-		elif iLink > 2:
-			headers["Content-Type"] = "application/json; charset=UTF-8"
-		if iLink != 2:
-			headers["Content-Length"] = str(len(body))
-			headers["Connection"] = "keep-alive"
-			body = body.encode('utf-8')
-		if self.cookie != "":
-			headers["Cookie"] = self.cookie
-		self.conn.request(method, direct[iLink], body, headers)
-		rspn = self.conn.getresponse()
-		status = rspn.status
-		reason = rspn.reason
-		hdlist = rspn.getheaders()
-		stream = rspn.read()
-		rspn.close()
-		for tup in hdlist:
-			if "Set-Cookie" in tup:
-				newCookie = tup[1][:tup[1].find(";")]
-				if self.cookie != '':
-					self.cookie = self.cookie + ";" + newCookie
-				else:
-					self.cookie = newCookie
-		return status, reason, stream.decode('utf-8')
-
-	def guest(self):
-		body = "username=" + self.usrnme[random.randint(0, 1)]
-		return self.send_recv("POST", 0, body)
-
-	def login(self):
-		body = "username=" + self.usrnme[random.randint(0, 1)] + "&password=" + self.passwd + "&rememberAuthDetails=false"
-		return self.send_recv("POST", 1, body)
-
-	def logout(self):
-		status, reason, stream = self.send_recv("POST", 2, None)
-		self.conn.close()
-		return status, reason, stream
-
-	def handshake(self):
-		self.cntId = 2
-		body = "[{\"ext\":{\"chatroomId\":" + self.roomId + "},\"version\":\"1.0\",\"minimumVersion\":\"0.9\",\"channel\":\"/meta/handshake\",\"supportedConnectionTypes\":[\"long-polling\",\"callback-polling\"],\"advice\":{\"timeout\":60000,\"interval\":0},\"id\":\"1\"}]"
-		status, reason, stream = self.send_recv("POST", 3, body)
-		rspn = str(stream)
-		start = rspn.find("\"clientId\"")
-		end = rspn.find(",", start)
-		self.clntId = rspn[start:end]
-		return status, reason, stream
-
-	def metacon(self):
-		body = "[{\"channel\":\"/meta/connect\",\"connectionType\":\"long-polling\",\"advice\":{\"timeout\":0},\"id\":\"" + str(self.cntId) + "\"," + self.clntId + "}]"
-		self.cntId += 1
-		return self.send_recv("POST", 4, body)
-
-	def connect(self):
-		body = "[{\"channel\":\"/meta/connect\",\"connectionType\":\"long-polling\",\"id\":\"" + str(self.cntId) + "\"," + self.clntId + "}]"
-		self.cntId += 1
-		return self.send_recv("POST", 4, body)
-
-	def context(self):
-		body = "[{\"channel\":\"/service/user/context/self/complete\",\"data\":{},\"id\":\"" + str(self.cntId) + "\"," + self.clntId + "}]"
-		self.cntId += 1
-		return self.send_recv("POST", 5, body)
-
-	def join_room(self):
-		print("[debug]: trying to join room")
-		self.alive = False
-		self.conn = http.client.HTTPConnection("e-chat.co")
-		self.conn.connect()
-		if self.passwd != "":
-			status, reason, stream = self.login()
-		else:
-			status, reason, stream = self.guest()
-		status, reason, stream = self.handshake()
-		status, reason, stream = self.metacon()
-		status, reason, stream = self.context()
-		self.alive = True
-		return
-
-	def run(self):
-		self.join_room()
-		while self.alive == True:
-			try:
-				status, reason, stream = self.connect()
-			except:
-				print("[error]: connection is lost")
-				self.conn.close()
-				self.join_room()
-				continue
-			if stream.find("\"error\":\"402::Unknown client\"") >= 0 or shr.exit == True:
-				self.alive = False
-			elif self.cntId > 256:
-				print("[debug]: maximum number of requests reached")
-				time.sleep(random.randint(1, 20))
-				status, reason, stream = self.logout()
-				time.sleep(random.randint(1, 20))
-				self.join_room()
-		status, reason, stream = self.logout()
-		return
-"""
 shr = Shared()
 
 def main():
-	usrnme = "Iran_Is_Safe"
-	passwd = "frlm"
-	roomId = "215315"
-	#fod = Faker(["awkward_silence", "breathing_corpse"], "frlm", roomId)
-	#fod.start()
-	#sod = Faker(["salad shirazi", "solmaz"], "frlm", roomId)
-	#sod.start()
-	#rod = Faker(["biqam", "razor"], "frlm", roomId)
-	#rod.start()
+	usrnme = "m@non!c"
+	passwd = "!SAAC*"
+	roomId = "207920"
 	pod = Observer(usrnme, passwd, roomId)
 	pod.start()
 	mod = Processor(usrnme, passwd, roomId)
