@@ -287,8 +287,6 @@ class Observer(threading.Thread):
 		self.client = ''
 		self.count = 2
 		self.alive = False
-		self.startup = int(time.time())
-		self.uptime = 7200
 		self.conn = http.client.HTTPConnection("e-chat.co")
 		self.conn.connect()
 
@@ -391,7 +389,7 @@ class Observer(threading.Thread):
 				print("[debug]: maximum number of requests reached")
 				self.conn.close()
 				self.join_room()
-			if shr.exit == True or int(time.time()) - self.startup > self.uptime:
+			if shr.exit == True:
 				self.alive = False
 		data_q.put(None)
 		task_q.put(None)
@@ -443,11 +441,11 @@ class Processor(threading.Thread):
 					print("[error]: json format has changed for", obj['channel'])
 					pass
 			elif obj['channel'] == "/service/conversation/message":
-				#try:
-				self.private_add(obj['data']['msg'], obj['data']['key'])
-				#except:
-					#print("[error]: json format has changed for", obj['channel'])
-					#pass
+				try:
+					self.private_add(obj['data']['msg'], obj['data']['key'])
+				except:
+					print("[error]: json format has changed for", obj['channel'])
+					pass
 			elif obj['channel'] == "/service/user/context/self/complete":
 				try:
 					users = obj['data']['chatroomContext']['data']['users']
@@ -546,9 +544,9 @@ class Processor(threading.Thread):
 		elif user_text[:4] == "say ":
 			self.say_text(user_text[4:], user_uuid)
 		elif user_text == "lock":
-			self.update_locked("lock", user_uuid)
+			self.update_locked(True, user_uuid)
 		elif user_text == "unlock":
-			self.update_locked("unlock", user_uuid)
+			self.update_locked(False, user_uuid)
 		elif user_text == "list":
 			self.list_users(user_uuid)
 		elif user_text == "clear":
@@ -625,14 +623,14 @@ class Processor(threading.Thread):
 
 	def update_locked(self, flag, user_uuid):
 		last_state = self.locked
-		if flag == "lock":
+		if flag == True:
 			self.locked = True
 			self.set_locked = int(time.time())
 			if last_state == True:
 				task_q.put([5, user_uuid, "room has been locked already"])
 			else:
 				task_q.put([5, user_uuid, "room is locked"])
-		elif flag == "unlock":
+		elif flag == False:
 			self.locked = False
 			self.set_locked = 0
 			if last_state == False:
@@ -842,7 +840,7 @@ class Operator(threading.Thread):
 			elif cmd[0] == 8:
 				status, reason, stream = self.message(cmd[1])
 		return
-
+"""
 class Faker(threading.Thread):
 	def __init__(self, usrnme, passwd, roomId):
 		threading.Thread.__init__(self)
@@ -958,19 +956,19 @@ class Faker(threading.Thread):
 				self.join_room()
 		status, reason, stream = self.logout()
 		return
-
+"""
 shr = Shared()
 
 def main():
 	usrnme = "Iran_Is_Safe"
 	passwd = "frlm"
 	roomId = "215315"
-	fod = Faker(["awkward_silence", "breathing_corpse"], "frlm", roomId)
-	fod.start()
-	sod = Faker(["salad shirazi", "solmaz"], "frlm", roomId)
-	sod.start()
-	rod = Faker(["biqam", "razor"], "frlm", roomId)
-	rod.start()
+	#fod = Faker(["awkward_silence", "breathing_corpse"], "frlm", roomId)
+	#fod.start()
+	#sod = Faker(["salad shirazi", "solmaz"], "frlm", roomId)
+	#sod.start()
+	#rod = Faker(["biqam", "razor"], "frlm", roomId)
+	#rod.start()
 	pod = Observer(usrnme, passwd, roomId)
 	pod.start()
 	mod = Processor(usrnme, passwd, roomId)
