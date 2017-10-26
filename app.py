@@ -844,9 +844,9 @@ class Operator(threading.Thread):
 shr = Shared()
 
 def main():
-	usrnme = "m@non!c"
-	passwd = "!SAAC*"
-	roomId = "207920"
+	usrnme = "Iran_Is_Safe"
+	passwd = "frlm"
+	roomId = "215315"
 	pod = Observer(usrnme, passwd, roomId)
 	pod.start()
 	mod = Processor(usrnme, passwd, roomId)
